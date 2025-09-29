@@ -9,24 +9,24 @@ import LotteryAnalysis from '@/components/LotteryAnalysis';
 import UserProfile from '@/components/UserProfile';
 import { UserProfile as UserProfileType } from '@/lib/numerology';
 
-// Mock user profile data
-const initialUserProfile: UserProfileType = {
-  name: 'María García',
-  birthDate: '1990-05-15',
-  significantDates: [
-    '2015-08-20 (Boda)',
-    '2018-03-10 (Nacimiento hijo)',
-    '2020-12-01 (Nuevo trabajo)'
-  ],
-  preferredLotteries: ['euromillions', 'spanish', 'powerball'],
-  spendingLimit: 50,
-  currentSpending: 35
+// Mock user profile data for after login
+const loggedInUserProfile: UserProfileType = {
+  name: 'Usuario de Prueba',
+  birthDate: '1992-08-25',
+  significantDates: [],
+  preferredLotteries: ['euromillions'],
+  spendingLimit: 100,
+  currentSpending: 10
 };
 
 export default function Index() {
   const [currentSection, setCurrentSection] = useState('dashboard');
-  const [userProfile, setUserProfile] = useState<UserProfileType>(initialUserProfile);
+  const [userProfile, setUserProfile] = useState<UserProfileType | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleLogin = () => {
+    setUserProfile(loggedInUserProfile);
+  };
 
   const navigationItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Home, color: 'text-lucky-emerald' },
@@ -36,6 +36,8 @@ export default function Index() {
   ];
 
   const renderCurrentSection = () => {
+    if (!userProfile) return null; // Should not happen if logic is correct
+
     switch (currentSection) {
       case 'dashboard':
         return <Dashboard userProfile={userProfile} onNavigate={setCurrentSection} />;
@@ -55,6 +57,24 @@ export default function Index() {
     return section?.label || 'Dashboard';
   };
 
+  // Render a login screen if no user is logged in
+  if (!userProfile) {
+    return (
+      <div className="flex items-center justify-center min-h-screen lucky-gradient-soft">
+        <Card className="p-8 text-center shadow-2xl lucky-card">
+          <CardContent>
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full lucky-gradient flex items-center justify-center shadow-lg">
+                <img src="/logo-lotozen-ultra.png" alt="LottoZen Ultra Logo" className="w-16 h-16" />
+            </div>
+            <h1 className="text-3xl font-bold mb-4 text-lucky">Bienvenido a LottoZen Ultra</h1>
+            <p className="text-gray-600 mb-8">Inicia sesión para ver tu dashboard personalizado.</p>
+            <Button onClick={handleLogin} className="btn-lucky shadow-lg">Iniciar Sesión (Demo)</Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen lucky-gradient-soft">
       {/* Floating decorative elements */}
@@ -70,12 +90,12 @@ export default function Index() {
             {/* Logo */}
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full lucky-gradient flex items-center justify-center shadow-lg lucky-number relative">
-                <Dice6 className="h-7 w-7 text-white" />
+                <img src="/logo-lotozen-ultra.png" alt="LottoZen Ultra Logo" className="w-10 h-10" />
                 <div className="absolute -top-1 -right-1 text-xs">✨</div>
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-lucky">
-                  LotteryLuck
+                  LottoZen Ultra
                 </h1>
                 <p className="text-xs text-lucky-emerald font-medium">🍀 Juego Responsable</p>
               </div>
@@ -203,9 +223,9 @@ export default function Index() {
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-full lucky-gradient flex items-center justify-center shadow-lg">
-                  <Dice6 className="h-6 w-6 text-white" />
+                  <img src="/logo-lotozen-ultra.png" alt="LottoZen Ultra Logo" className="w-8 h-8" />
                 </div>
-                <span className="font-bold text-xl text-lucky">LotteryLuck</span>
+                <span className="font-bold text-xl text-lucky">LottoZen Ultra</span>
               </div>
               <p className="text-sm text-gray-600">
                 Una aplicación de entretenimiento para generar números de lotería de forma responsable y elegante.
@@ -251,7 +271,7 @@ export default function Index() {
           
           <div className="border-t border-white/30 mt-8 pt-6 text-center">
             <p className="text-sm text-gray-600 mb-2">
-              © 2024 LotteryLuck. Esta aplicación es solo para entretenimiento. 
+              © 2024 LottoZen Ultra. Esta aplicación es solo para entretenimiento. 
               Los números generados no garantizan ningún resultado.
             </p>
             <div className="flex justify-center gap-2 text-2xl">
